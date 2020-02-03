@@ -34,8 +34,8 @@ const jsonData string = `
 `
 
 var (
-	endPoint string = LoadConf("was")
-	myServer string = LoadConf("web")
+	endPoint string = "http://" + LoadConf("was")
+	myServer string = "http://" + LoadConf("web")
 	client          = &http.Client{}
 )
 

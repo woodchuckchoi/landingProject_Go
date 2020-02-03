@@ -36,7 +36,7 @@ const jsonData string = `
 
 var (
 	endPoint string = LoadConf("db")
-	myServer string	= LoadConf("was")
+	myServer string	= "http://" + LoadConf("was")
 	client 			= &http.Client{}
 	dbEndpoint 		= GetDbEndpoint()
 )
@@ -320,14 +320,14 @@ func main() {
 	HR.HandleFunc("/new", Post).Methods(http.MethodPost)
 	HR.HandleFunc("/new", NotFound)
 
-	HR.HandleFunc("/id/{targetID}", GetSpecific).Methods(http.MethodGet)
-	HR.HandleFunc("/id/{targetID}", Put).Methods(http.MethodPut)
-	HR.HandleFunc("/id/{targetID}", Delete).Methods(http.MethodDelete)
+	HR.HandleFunc("/id", GetSpecific).Methods(http.MethodGet)
+	HR.HandleFunc("/id", Put).Methods(http.MethodPut)
+	HR.HandleFunc("/id", Delete).Methods(http.MethodDelete)
 	HR.HandleFunc("/id", NotFound)
 
-	HR.HandleFunc("/name/{targetName}", GetSpecific).Methods(http.MethodGet)
-	HR.HandleFunc("/name/{targetName}", Put).Methods(http.MethodPut)
-	HR.HandleFunc("/name/{targetName}", Delete).Methods(http.MethodDelete)
+	HR.HandleFunc("/name", GetSpecific).Methods(http.MethodGet)
+	HR.HandleFunc("/name", Put).Methods(http.MethodPut)
+	HR.HandleFunc("/name", Delete).Methods(http.MethodDelete)
 	HR.HandleFunc("/name", NotFound)
 
 	log.Fatal(http.ListenAndServe(myServer, r))
