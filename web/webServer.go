@@ -35,24 +35,12 @@ const jsonData string = `
 
 var (
 	endPoint string = "http://" + LoadConf("was")
-	myServer string = GetSelfConf("web")
+	myServer string = GetSelfConf()
 	client          = &http.Client{}
 )
 
-func GetSelfConf(target string) string{
-	f, err := os.Open("../conf.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	raw, err := ioutil.ReadAll(f)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var conf Conf
-	json.Unmarshal(raw, &conf)
-	return "localhost" + ":" + strconv.Itoa(int(conf["port"][target].(float64)))
+func GetSelfConf() string{
+	return "10.10.13.240:80"
 }
 
 func LoadConf(target string) string {

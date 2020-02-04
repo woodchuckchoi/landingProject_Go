@@ -136,7 +136,6 @@ func ListEmployee() {
 			dest = fmt.Sprintf("%s/%s", nameEndpoint, value)
 		}	
 	}
-
 	message := bytes.NewBufferString(fmt.Sprintf(jsonData, dest, ""))
 	req, err := http.NewRequest(http.MethodGet, endPoint, message)
 	if err != nil {
@@ -144,12 +143,14 @@ func ListEmployee() {
 	}
 	
 	resp, err := client.Do(req)
+	
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
 
 	bytes, err := ioutil.ReadAll(resp.Body)
+	
 	if err != nil {
 		log.Fatal(err)
 	}
