@@ -87,11 +87,12 @@ func LoadConf(target string) string {
 
 func ParseBody(raw []byte) []byte {
 	var body Body
+	fmt.Println("test1")
 	err := json.Unmarshal(raw, &body)
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	fmt.Println("test2")
 	rawResultFormat := `
 	STATUS:%s
 	%s
@@ -100,13 +101,14 @@ func ParseBody(raw []byte) []byte {
 	PersonFormat := `
 	Entry %d | ID %05d | NAME %30s | SALARY %10d
 	`
-
+	fmt.Println("test3")
 	personSum := ""
 	for index, person := range body.Employee {
 		personSum += fmt.Sprintf(PersonFormat, index, person.ID, person.Name, person.Salary)
 	}
-
+	fmt.Println("test4")
 	rawResult := fmt.Sprintf(rawResultFormat, body.Message, personSum)
+	fmt.Println("test5")
 	return []byte(rawResult)
 }
 
@@ -126,12 +128,12 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("RECEIVED REQUEST FROM ", r.Host, "\n", body)
-	fmt.Println("test1")
+	
 	req, err := http.NewRequest(r.Method, body.Message, bytes.NewBuffer(raw))
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("test2")
+	
 	resp, err := client.Do(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -139,11 +141,9 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer resp.Body.Close()
-	fmt.Println("test3")
+
 	w.WriteHeader(http.StatusOK)
-	fmt.Println("test4")
 	bytes, err := ioutil.ReadAll(resp.Body)
-	fmt.Println("test5")
 	w.Write(ParseBody(bytes))
 }
 
