@@ -111,7 +111,7 @@ func ParseBody(raw []byte) []byte {
 
 func Receive(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
-
+	fmt.Println(r.Body)
 	var body Body
 	raw := make([]byte, r.ContentLength)
 	_, err := r.Body.Read(raw)
