@@ -126,12 +126,12 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("RECEIVED REQUEST FROM ", r.Host, "\n", body)
-
+	fmt.Println("To", body.Message)
 	req, err := http.NewRequest(r.Method, body.Message, bytes.NewBuffer(raw))
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	fmt.Println("invalid p1")
 	resp, err := client.Do(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
