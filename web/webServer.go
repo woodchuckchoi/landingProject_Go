@@ -124,13 +124,13 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Received request\n", body)
+	fmt.Println("RECEIVED REQUEST FROM ", r.Host, "\n", body)
 
 	req, err := http.NewRequest(r.Method, body.Message, bytes.NewBuffer(raw))
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("came here2", body)
+
 	resp, err := client.Do(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -138,6 +138,7 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer resp.Body.Close()
+	
 	w.WriteHeader(http.StatusOK)
 
 	bytes, err := ioutil.ReadAll(resp.Body)
