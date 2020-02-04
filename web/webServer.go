@@ -73,6 +73,7 @@ func LoadConf(target string) string {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer f.Close()
 
 	raw, err := ioutil.ReadAll(f)
 	if err != nil {

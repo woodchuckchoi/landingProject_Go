@@ -76,6 +76,7 @@ func LoadConf(target string) string {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer f.Close()
 
 	raw, err := ioutil.ReadAll(f)
 	if err != nil {
@@ -138,7 +139,7 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	defer db.Close()
-
+	
 	var result []Person
 	var person Person
 
@@ -163,23 +164,6 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 	stringJsonify := string(byteJsonify)[1 : len(byteJsonify)-1]
 	message := fmt.Sprintf(jsonData, "Successfully retreived HR resources", stringJsonify)
 	w.Write([]byte(message))
-
-	// req, err := http.NewRequest("GET", endPoint, nil)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// resp, err := client.Do(req)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer resp.Close()
-
-	// bytes, err := ioutil.ReadAll(resp.Body)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// w.Write(bytes)
 }
 
 func GetSpecific(w http.ResponseWriter, r *http.Request) {
