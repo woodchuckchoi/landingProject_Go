@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -87,8 +88,10 @@ func LoadConf(target string) string {
 
 func ParseBody(raw []byte) []byte {
 	var body Body
-	fmt.Println("test1")
-	err := json.Unmarshal(raw, &body)
+
+	pre_parse := []byte(strings.TrimSpace(string(raw)))
+
+	err := json.Unmarshal(pre_parse, &body)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -128,12 +131,12 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("RECEIVED REQUEST FROM ", r.Host, "\n", body)
-	
+
 	req, err := http.NewRequest(r.Method, body.Message, bytes.NewBuffer(raw))
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	resp, err := client.Do(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
