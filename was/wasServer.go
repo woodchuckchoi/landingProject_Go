@@ -10,7 +10,6 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"encoding/json"
-	"net"
 
 	"github.com/gorilla/mux"
 )
@@ -53,18 +52,9 @@ func GetSelfConf(target string) string{
 		log.Fatal(err)
 	}
 
-	host, _ := os.Hostname()
-	addrs, _ := net.LookupIP(host)
-	var to_return string
-	for _, addr := range addrs {
-		if ipv4 := addr.To4(); ipv4 != nil {
-			to_return = fmt.Sprintf("%v", ipv4)
-		}   
-	}
-
 	var conf Conf
 	json.Unmarshal(raw, &conf)
-	return to_return + ":" + strconv.Itoa(int(conf["port"][target].(float64)))
+	return "localhost" + ":" + strconv.Itoa(int(conf["port"][target].(float64)))
 }
 
 func LoadConf(target string) string {
