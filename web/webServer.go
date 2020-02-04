@@ -113,12 +113,13 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
 	var body Body
+	fmt.Println("came here!!", r)
 	raw := make([]byte, r.ContentLength)
 	_, err := r.Body.Read(raw)
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	fmt.Println("came here!!", r)
 	err = json.Unmarshal(raw, &body)
 	if err != nil {
 		log.Fatal(err)
