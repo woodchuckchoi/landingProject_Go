@@ -131,7 +131,7 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	fmt.Println("to find unexpected json1")
 	resp, err := client.Do(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -139,11 +139,12 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer resp.Body.Close()
-	
+	fmt.Println("to find unexpected json2")
 	w.WriteHeader(http.StatusOK)
 
 	bytes, err := ioutil.ReadAll(resp.Body)
 	w.Write(ParseBody(bytes))
+	fmt.Println("to find unexpected json3")
 }
 
 func main() {
