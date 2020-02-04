@@ -1,0 +1,14 @@
+{
+    "host": {
+        "local" : "10.10.11.33",
+        "web"   : "SRE-external-1161610350.ap-northeast-2.elb.amazonaws.com",
+        "was"   : "SRE-internal-197841825.ap-northeast-2.elb.amazonaws.com",
+        "db"    : "terraform-20200204060301464500000001.c7iudllookzy.ap-northeast-2.rds.amazonaws.com"
+    },
+    "port": {
+        "local" : 80,
+        "web"   : 80,
+        "was"   : 8080,
+        "db"    : 3306
+    }
+}
