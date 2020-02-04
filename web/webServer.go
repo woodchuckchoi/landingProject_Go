@@ -111,7 +111,7 @@ func ParseBody(raw []byte) []byte {
 
 func Receive(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
-	fmt.Println(r.Body)
+
 	var body Body
 	raw := make([]byte, r.ContentLength)
 	_, err := r.Body.Read(raw)
@@ -119,18 +119,18 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	// there should be two receivers
-
 	err = json.Unmarshal(raw, &body)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	req, err := http.NewRequest(r.Method, string(body.Message), bytes.NewBuffer(raw))
+	fmt.Println("came here1", body)
+
+	req, err := http.NewRequest(r.Method, body.Message, bytes.NewBuffer(raw))
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	fmt.Println("came here2", body)
 	resp, err := client.Do(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
