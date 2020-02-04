@@ -109,9 +109,9 @@ func ParseBody(raw []byte) []byte {
 	for index, person := range body.Employee {
 		personSum += fmt.Sprintf(PersonFormat, index, person.ID, person.Name, person.Salary)
 	}
-	fmt.Println("test4")
+	fmt.Println("test4", personSum)
 	rawResult := fmt.Sprintf(rawResultFormat, body.Message, personSum)
-	fmt.Println("test5")
+	fmt.Println("test5", rawResult)
 	return []byte(rawResult)
 }
 
