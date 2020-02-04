@@ -157,13 +157,12 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 		result = append(result, person)
 	}
 
-	fmt.Println(result)
-
 	byteJsonify, err := json.Marshal(result)
 	if err != nil {
 		log.Fatal(err)
 	}
 	stringJsonify := string(byteJsonify)[1 : len(byteJsonify)-1]
+	fmt.Println(stringJsonify)
 	message := fmt.Sprintf(jsonData, "Successfully retreived HR resources", stringJsonify)
 	w.Write([]byte(message))
 }
