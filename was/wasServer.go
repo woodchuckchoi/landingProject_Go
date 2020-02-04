@@ -48,7 +48,7 @@ func GetSelfHost() string{
 	var to_return string
 	for _, addr := range addrs {
 		if ipv4 := addr.To4(); ipv4 != nil {
-			to_return = string(ipv4)
+			to_return = fmt.Sprintf("%v", ipv4)
 		}   
 	}
 	return to_return
