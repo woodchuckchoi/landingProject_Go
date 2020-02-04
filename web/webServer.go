@@ -113,19 +113,18 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/json")
 
 	var body Body
-	fmt.Println("came here!!", r)
-	raw := make([]byte, r.ContentLength)
-	_, err := r.Body.Read(raw)
+	raw, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("came here!!", r)
+	defer r.Body.Close()
+
 	err = json.Unmarshal(raw, &body)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("came here1", body)
+	fmt.Println("Received request\n", body)
 
 	req, err := http.NewRequest(r.Method, body.Message, bytes.NewBuffer(raw))
 	if err != nil {
