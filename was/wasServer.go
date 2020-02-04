@@ -36,7 +36,7 @@ const jsonData string = `
 
 var (
 	endPoint string = LoadConf("db")
-	myServer string	= "http://" + GetSelfConf("was")
+	myServer string	= GetSelfConf("was")
 	client 			= &http.Client{}
 	dbEndpoint 		= GetDbEndpoint()
 )
