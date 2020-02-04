@@ -95,7 +95,7 @@ func ParseBody(raw []byte) []byte {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("test2")
+	
 	rawResultFormat := `
 	STATUS:%s
 	%s
@@ -104,14 +104,14 @@ func ParseBody(raw []byte) []byte {
 	PersonFormat := `
 	Entry %d | ID %05d | NAME %30s | SALARY %10d
 	`
-	fmt.Println("test3")
+	
 	personSum := ""
 	for index, person := range body.Employee {
 		personSum += fmt.Sprintf(PersonFormat, index, person.ID, person.Name, person.Salary)
 	}
-	fmt.Println("test4", personSum)
+	
 	rawResult := fmt.Sprintf(rawResultFormat, body.Message, personSum)
-	fmt.Println("test5", rawResult)
+	
 	return []byte(rawResult)
 }
 
@@ -136,7 +136,7 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	fmt.Println("test 1", raw)
 	resp, err := client.Do(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -144,10 +144,12 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer resp.Body.Close()
-
+	fmt.Println("test 2")
 	w.WriteHeader(http.StatusOK)
 	bytes, err := ioutil.ReadAll(resp.Body)
+	fmt.Println("test 3", bytes)
 	w.Write(ParseBody(bytes))
+	fmt.Println("test 4")
 }
 
 func main() {
