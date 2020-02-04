@@ -139,7 +139,7 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	defer db.Close()
-	
+
 	var result []Person
 	var person Person
 
@@ -163,6 +163,7 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 	stringJsonify := string(byteJsonify)[1 : len(byteJsonify)-1]
 	message := fmt.Sprintf(jsonData, "Successfully retreived HR resources", stringJsonify)
+	fmt.Println(message)
 	w.Write([]byte(message))
 }
 
