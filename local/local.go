@@ -156,6 +156,8 @@ func ListEmployee() {
 	}
 
 	fmt.Println(string(bytes))
+	var next string
+	fmt.Scanf("%s", &next)
 }
 
 func CreateEmployee() {
@@ -191,6 +193,9 @@ func CreateEmployee() {
 		log.Fatal(err)
 	}
 	fmt.Println(printData)
+
+	var next string
+	fmt.Scanf("%s", &next)
 }
 
 func EditEmployee() {
@@ -256,6 +261,9 @@ func EditEmployee() {
 	}
 
 	fmt.Println(printData)
+
+	var next string
+	fmt.Scanf("%s", &next)
 }
 
 func DeleteEmployee() {
@@ -306,6 +314,9 @@ func DeleteEmployee() {
 	}
 
 	fmt.Println(printData)
+
+	var next string
+	fmt.Scanf("%s", &next)
 }
 
 func main() {
