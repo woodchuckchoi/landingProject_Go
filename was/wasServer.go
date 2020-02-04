@@ -1,31 +1,33 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-	"strconv"
-	"os"
-	"io/ioutil"
 	"database/sql"
-	_ "github.com/go-sql-driver/mysql"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net"
+	"net/http"
+	"os"
+	"strconv"
+
+	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/gorilla/mux"
 )
 
-type Body	struct {
-	Message		string		`json:"message"`
-	Employee	[]Person	`json:"employee"`
+type Body struct {
+	Message  string   `json:"message"`
+	Employee []Person `json:"employee"`
 }
 
 type Person struct {
-	ID		uint16	`json:"id"`
-	Name	string	`json:"name"`
-	Salary	uint32	`json:"salary"`
+	ID     uint16 `json:"id"`
+	Name   string `json:"name"`
+	Salary uint32 `json:"salary"`
 }
 
-type Conf map[string] map[string]interface{}
+type Conf map[string]map[string]interface{}
 
 const jsonData string = `
 {
@@ -35,13 +37,23 @@ const jsonData string = `
 `
 
 var (
-	endPoint string = LoadConf("db")
-	myServer string	= GetSelfConf("was")
-	client 			= &http.Client{}
-	dbEndpoint 		= GetDbEndpoint()
+	endPoint   string = LoadConf("db")
+	myServer   string = GetSelfConf("was")
+	client            = &http.Client{}
+	dbEndpoint        = GetDbEndpoint()
 )
 
-func GetSelfConf(target string) string{
+func GetSelfConf(target string) string {
+	var hostString string
+	host, _ := os.Hostname()
+	addrs, _ := net.LookupIP(host)
+	for _, addr := range addrs {
+		if ipv4 := addr.To4(); ipv4 != nil {
+			hostString = addr.String()
+			break
+		}
+	}
+
 	f, err := os.Open("../conf.json")
 	if err != nil {
 		log.Fatal(err)
@@ -54,11 +66,12 @@ func GetSelfConf(target string) string{
 
 	var conf Conf
 	json.Unmarshal(raw, &conf)
-	return "localhost" + ":" + strconv.Itoa(int(conf["port"][target].(float64)))
+
+	return fmt.Sprintf("%s:%d", hostString, int(conf["port"][target].(float64)))
 }
 
 func LoadConf(target string) string {
-	
+
 	f, err := os.Open("../conf.json")
 	if err != nil {
 		log.Fatal(err)
@@ -75,12 +88,12 @@ func LoadConf(target string) string {
 }
 
 func GetDbEndpoint() string {
-	userName	:= os.Getenv("DBUSERNAME") // master
-	userPass	:= os.Getenv("DBPASSWORD") // Bespin1!
-	dbName		:= os.Getenv("DBNAME") // hr
+	userName := os.Getenv("DBUSERNAME") // master
+	userPass := os.Getenv("DBPASSWORD") // Bespin1!
+	dbName := os.Getenv("DBNAME")       // hr
 
 	dbEndpoint := fmt.Sprintf("%s:%s@tcp(%s)/%s", userName, userPass, endPoint, dbName)
-	
+
 	return dbEndpoint
 }
 
@@ -90,13 +103,13 @@ func ParseURL(url string) []string {
 	result := []string{}
 
 	for index <= len(parse)-1 {
-		
+
 		if parse[index] == rune('/') {
 			result = append(result, string(parse[start:index]))
-			if index != len(parse) - 1 {
+			if index != len(parse)-1 {
 				start = index + 1
 			}
-		} else if index == len(parse) - 1 {
+		} else if index == len(parse)-1 {
 			result = append(result, string(parse[start:]))
 		}
 
@@ -127,7 +140,7 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 
 	var result []Person
 	var person Person
-	
+
 	rows, err := db.Query("SELECT id, name, salary FROM hr")
 	if err != nil {
 		log.Fatal(err)
@@ -141,12 +154,12 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 		}
 		result = append(result, person)
 	}
-	
+
 	byteJsonify, err := json.Marshal(result)
 	if err != nil {
 		log.Fatal(err)
 	}
-	stringJsonify := string(byteJsonify)[1:len(byteJsonify)-1]
+	stringJsonify := string(byteJsonify)[1 : len(byteJsonify)-1]
 	message := fmt.Sprintf(jsonData, "Successfully retreived HR resources", stringJsonify)
 	w.Write([]byte(message))
 
@@ -160,7 +173,7 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 	// 	log.Fatal(err)
 	// }
 	// defer resp.Close()
-	
+
 	// bytes, err := ioutil.ReadAll(resp.Body)
 	// if err != nil {
 	// 	log.Fatal(err)
@@ -186,7 +199,7 @@ func GetSpecific(w http.ResponseWriter, r *http.Request) {
 
 	var result []Person
 	var person Person
-	
+
 	rows, err := db.Query("SELECT id, name, salary FROM hr WHERE ? = ?", field, value)
 	if err != nil {
 		log.Fatal(err)
@@ -200,22 +213,22 @@ func GetSpecific(w http.ResponseWriter, r *http.Request) {
 		}
 		result = append(result, person)
 	}
-	
+
 	byteJsonify, err := json.Marshal(result)
 	if err != nil {
 		log.Fatal(err)
 	}
-	stringJsonify := string(byteJsonify)[1:len(byteJsonify)-1]
+	stringJsonify := string(byteJsonify)[1 : len(byteJsonify)-1]
 	message := fmt.Sprintf(jsonData, "Successfully retreived HR resources", stringJsonify)
 	w.Write([]byte(message))
 }
 
 func Post(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	
+
 	rawJson := make([]byte, r.ContentLength)
 	r.Body.Read(rawJson)
-	
+
 	var response Body
 	json.Unmarshal(rawJson, &response)
 
@@ -233,7 +246,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 
 	nRows := 0
 
-	for _, person := range(response.Employee) {
+	for _, person := range response.Employee {
 		result, err := db.Exec("INSERT INTO hr (id, name, salary) value (?, '?', ?)", person.ID, person.Name, person.Salary)
 		if err != nil {
 			log.Fatal(err)
@@ -276,7 +289,7 @@ func Put(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	nRows, err := result.RowsAffected()
 	if err != nil {
 		log.Fatal(err)
@@ -349,8 +362,3 @@ func main() {
 
 	log.Fatal(http.ListenAndServe(myServer, r))
 }
-
-
-// layer1 = display received data / request json				inbound: N/A | outbound: 777
-// layer2 = forming to-be-displayed data / relay request		inbound: 777 | outbound: 888
-// layer3 = parse request / communicate with db				inbound: 888 | outbound: DB(3906)

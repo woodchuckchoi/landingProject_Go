@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"strconv"
@@ -35,16 +36,39 @@ const jsonData string = `
 
 var (
 	endPoint string = "http://" + LoadConf("was")
-	myServer string = GetSelfConf()
+	myServer string = GetSelfConf("web")
 	client          = &http.Client{}
 )
 
-func GetSelfConf() string{
-	return "10.10.13.240:80"
+func GetSelfConf(target string) string {
+	var hostString string
+	host, _ := os.Hostname()
+	addrs, _ := net.LookupIP(host)
+	for _, addr := range addrs {
+		if ipv4 := addr.To4(); ipv4 != nil {
+			hostString = addr.String()
+			break
+		}
+	}
+
+	f, err := os.Open("../conf.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	raw, err := ioutil.ReadAll(f)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var conf Conf
+	json.Unmarshal(raw, &conf)
+
+	return fmt.Sprintf("%s:%d", hostString, int(conf["port"][target].(float64)))
 }
 
 func LoadConf(target string) string {
-	
+
 	f, err := os.Open("../conf.json")
 	if err != nil {
 		log.Fatal(err)
@@ -95,12 +119,14 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
+	// there should be two receivers
+
 	err = json.Unmarshal(raw, &body)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	req, err := http.NewRequest(r.Method, body.Message, bytes.NewBuffer(raw))
+	req, err := http.NewRequest(r.Method, string(body.Message), bytes.NewBuffer(raw))
 	if err != nil {
 		log.Fatal(err)
 	}
