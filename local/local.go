@@ -137,24 +137,23 @@ func ListEmployee() {
 		}	
 	}
 	message := bytes.NewBufferString(fmt.Sprintf(jsonData, dest, ""))
+	fmt.Println("invalid character p1", endPoint)
 	req, err := http.NewRequest(http.MethodGet, endPoint, message)
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+	fmt.Println("invalid character p2")
 	resp, err := client.Do(req)
-	
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
-
+	fmt.Println("invalid character p3")
 	bytes, err := ioutil.ReadAll(resp.Body)
-	
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	fmt.Println("invalid character p4")
 	fmt.Println(string(bytes))
 	var next string
 	fmt.Scanf("%s", &next)
