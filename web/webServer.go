@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net"
 	"os"
 	"strconv"
 
@@ -35,11 +36,24 @@ const jsonData string = `
 
 var (
 	endPoint string = "http://" + LoadConf("was")
-	myServer string = "http://" + LoadConf("web")
+	myServer string = "http://" + LoadConf("host")
 	client          = &http.Client{}
 )
 
+func GetSelfHost() string{
+	host, _ := os.Hostname()
+	addrs, _ := net.LookupIP(host)
+	var to_return string
+	for _, addr := range addrs {
+		if ipv4 := addr.To4(); ipv4 != nil {
+			to_return = string(ipv4)
+		}   
+	}
+	return to_return
+}
+
 func LoadConf(target string) string {
+	
 	f, err := os.Open("../conf.json")
 	if err != nil {
 		log.Fatal(err)
@@ -52,6 +66,9 @@ func LoadConf(target string) string {
 
 	var conf Conf
 	json.Unmarshal(raw, &conf)
+	if target == "host" {
+		return GetSelfHost() + ":" + strconv.Itoa(int(conf["port"][target].(float64)))
+	}
 	return conf["host"][target].(string) + ":" + strconv.Itoa(int(conf["port"][target].(float64)))
 }
 

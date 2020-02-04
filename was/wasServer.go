@@ -10,6 +10,7 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"encoding/json"
+	"net"
 
 	"github.com/gorilla/mux"
 )
@@ -36,17 +37,30 @@ const jsonData string = `
 
 var (
 	endPoint string = LoadConf("db")
-	myServer string	= "http://" + LoadConf("was")
+	myServer string	= "http://" + LoadConf("host")
 	client 			= &http.Client{}
 	dbEndpoint 		= GetDbEndpoint()
 )
 
+func GetSelfHost() string{
+	host, _ := os.Hostname()
+	addrs, _ := net.LookupIP(host)
+	var to_return string
+	for _, addr := range addrs {
+		if ipv4 := addr.To4(); ipv4 != nil {
+			to_return = string(ipv4)
+		}   
+	}
+	return to_return
+}
+
 func LoadConf(target string) string {
+	
 	f, err := os.Open("../conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	raw, err := ioutil.ReadAll(f)
 	if err != nil {
 		log.Fatal(err)
@@ -54,13 +68,16 @@ func LoadConf(target string) string {
 
 	var conf Conf
 	json.Unmarshal(raw, &conf)
+	if target == "host" {
+		return GetSelfHost() + ":" + strconv.Itoa(int(conf["port"][target].(float64)))
+	}
 	return conf["host"][target].(string) + ":" + strconv.Itoa(int(conf["port"][target].(float64)))
 }
 
 func GetDbEndpoint() string {
-	userName	:= os.Getenv("DBUSERNAME")
-	userPass	:= os.Getenv("DBPASSWORD")
-	dbName		:= os.Getenv("DBNAME")
+	userName	:= os.Getenv("DBUSERNAME") // master
+	userPass	:= os.Getenv("DBPASSWORD") // Bespin1!
+	dbName		:= os.Getenv("DBNAME") // hr
 
 	dbEndpoint := fmt.Sprintf("%s:%s@tcp(%s)/%s", userName, userPass, endPoint, dbName)
 	
@@ -244,7 +261,7 @@ func Put(w http.ResponseWriter, r *http.Request) {
 	var parsedJson Body
 
 	r.Body.Read(rawJson)
-	err := json.Unmarshal(rawJson, parsedJson)
+	err := json.Unmarshal(rawJson, &parsedJson)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -295,7 +312,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	insideMessage := fmt.Sprintf("%d ROWS AFFECTED!", nRows, "")
+	insideMessage := fmt.Sprintf("%d ROWS AFFECTED!", nRows)
 	message := fmt.Sprintf(jsonData, insideMessage, "")
 	w.Write([]byte(message))
 }
