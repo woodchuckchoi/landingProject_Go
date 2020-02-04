@@ -92,13 +92,13 @@ func ParseBody(raw []byte) []byte {
 		log.Fatal(err)
 	}
 
-	rawResultFormat := `\n
-	STATUS:%s\n
+	rawResultFormat := `
+	STATUS:%s
 	%s
 	`
 
 	PersonFormat := `
-	Entry %d | ID %05d | NAME %30s | SALARY %10d\n
+	Entry %d | ID %05d | NAME %30s | SALARY %10d
 	`
 
 	personSum := ""
