@@ -179,7 +179,7 @@ func GetSpecific(w http.ResponseWriter, r *http.Request) {
 
 	fields := ParseURL(r.URL.Path)
 	var field string = fields[1]
-	var value interface{} = fields[2]
+	var value string = fields[2]
 
 	dbEndpoint := GetDbEndpoint()
 
@@ -192,13 +192,12 @@ func GetSpecific(w http.ResponseWriter, r *http.Request) {
 	var result []Person
 	var person Person
 
-	queryString := fmt.Sprintf("SELECT id, name, salary FROM hr WHERE %s = ", field)
-
-	if field == "id" {
-		queryString += fmt.Sprintf("%d", value.(int))
-	} else {
-		queryString += fmt.Sprintf("%s", value.(string))
+	if field == "name" {
+		value = "'" + value + "'"
 	}
+
+	queryString := fmt.Sprintf("SELECT id, name, salary FROM hr WHERE %s = %s", field, value)
+	
 	rows, err := db.Query(queryString)
 	if err != nil {
 		log.Fatal(err)
