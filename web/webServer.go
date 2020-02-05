@@ -136,7 +136,7 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("test 1", string(raw), body)
+	
 	resp, err := client.Do(req)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -144,12 +144,11 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer resp.Body.Close()
-	fmt.Println("test 2")
+	
 	w.WriteHeader(http.StatusOK)
 	bytes, err := ioutil.ReadAll(resp.Body)
-	fmt.Println("test 3", string(bytes))
+	
 	w.Write(ParseBody(bytes))
-	fmt.Println("test 4")
 }
 
 func main() {

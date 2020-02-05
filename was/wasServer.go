@@ -206,11 +206,18 @@ func GetSpecific(w http.ResponseWriter, r *http.Request) {
 		result = append(result, person)
 	}
 
-	byteJsonify, err := json.Marshal(result)
-	if err != nil {
-		log.Fatal(err)
+	var stringJsonify string
+
+	if len(result) != 0 {
+		byteJsonify, err := json.Marshal(result)
+		if err != nil {
+			log.Fatal(err)
+		}
+		stringJsonify = string(byteJsonify)[1 : len(byteJsonify)-1]
+	} else {
+		stringJsonify = ""
 	}
-	stringJsonify := string(byteJsonify)[1 : len(byteJsonify)-1]
+
 	message := fmt.Sprintf(jsonData, "Successfully retreived HR resources", stringJsonify)
 	w.Write([]byte(message))
 }
