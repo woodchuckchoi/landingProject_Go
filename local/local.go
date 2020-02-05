@@ -259,7 +259,7 @@ func EditEmployee() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(printData)
+	fmt.Println(string(printData))
 
 	var next string
 	fmt.Scanf("%s", &next)
@@ -312,7 +312,7 @@ func DeleteEmployee() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(printData)
+	fmt.Println(string(printData))
 
 	var next string
 	fmt.Scanf("%s", &next)
