@@ -43,8 +43,8 @@ var (
 var (
 	getAllEndpoint string = target + "/employee"
 	newEndpoint    string = target + "/new"
-	idEndpoint     string = target + "/id"
-	nameEndpoint   string = target + "/name"
+	idEndpoint     string = getAllEndpoint + "/id"
+	nameEndpoint   string = getAllEndpoint + "/name"
 )
 
 func LoadConf(target string) string {
