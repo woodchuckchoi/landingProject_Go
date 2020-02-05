@@ -44,6 +44,7 @@ var (
 )
 
 func GetSelfConf(target string) string {
+	fmt.Println("CHECKING HOST NAME AND PORT...")
 	var hostString string
 	host, _ := os.Hostname()
 	addrs, _ := net.LookupIP(host)
@@ -71,7 +72,7 @@ func GetSelfConf(target string) string {
 }
 
 func LoadConf(target string) string {
-
+	fmt.Println("LOADING CONFIGURATION...")
 	f, err := os.Open("../conf.json")
 	if err != nil {
 		log.Fatal(err)
@@ -89,6 +90,7 @@ func LoadConf(target string) string {
 }
 
 func GetDbEndpoint() string {
+	fmt.Println("LOADING DB CONFIGURATION...")
 	userName := os.Getenv("DBUSERNAME") 
 	userPass := os.Getenv("DBPASSWORD") 
 	dbName := os.Getenv("DBNAME")       
@@ -120,6 +122,7 @@ func ParseURL(url string) []string {
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("REQUEST REACHED INDEX API...")
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	str := `
@@ -130,7 +133,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAll(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("REQUEST RECHEAD!")
+	fmt.Println("REQUEST REACHED GETALL API...")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
@@ -174,6 +177,7 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetSpecific(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("REQUEST REACHED GETSPECIFIC API...")
 	w.Header().Set("content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
@@ -229,6 +233,7 @@ func GetSpecific(w http.ResponseWriter, r *http.Request) {
 }
 
 func Post(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("REQUEST REACHED POST API...")
 	w.Header().Set("Content-Type", "application/json")
 
 	rawJson := make([]byte, r.ContentLength)
@@ -250,7 +255,6 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	nRows := 0
-	fmt.Println("oioi")
 	for _, person := range response.Employee {
 		execString := fmt.Sprintf("INSERT INTO hr (id, name, salary) value (%d, '%s', %d)", person.ID, person.Name, person.Salary)
 		result, err := db.Exec(execString)
@@ -260,14 +264,14 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		n, err := result.RowsAffected()
 		nRows += int(n)
 	}
-	fmt.Println("ioio")
 	w.WriteHeader(http.StatusCreated)
-	insideMessage := fmt.Sprintf("%d ROWS CREATED!", nRows)
+	insideMessage := fmt.Sprintf("%d ROW(S) CREATED!", nRows)
 	message := fmt.Sprintf(jsonData, insideMessage, "")
 	w.Write([]byte(message))
 }
 
 func Put(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("REQUEST REACHED PUT API...")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusAccepted)
 
@@ -305,13 +309,13 @@ func Put(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	insideMessage := fmt.Sprintf("%d ROWS AFFECTED!", nRows)
+	insideMessage := fmt.Sprintf("%d ROW(S) AFFECTED!", nRows)
 	message := fmt.Sprintf(jsonData, insideMessage, "")
 	w.Write([]byte(message))
-
 }
 
 func Delete(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("REQUEST REACHED DELETE API...")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	fmt.Println("DELETE REQUEST RECEIVED!")
@@ -342,12 +346,13 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	insideMessage := fmt.Sprintf("%d ROWS AFFECTED!", nRows)
+	insideMessage := fmt.Sprintf("%d ROW(S) AFFECTED!", nRows)
 	message := fmt.Sprintf(jsonData, insideMessage, "")
 	w.Write([]byte(message))
 }
 
 func NotFound(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("REQUEST REACHED DEADEND...")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusNotFound)
 	message := fmt.Sprintf(jsonData, "REQUEST INVALID!", "")

@@ -98,44 +98,8 @@ func CreateQuery() int {
 
 func ListEmployee() {
 	ClearScreen()
-	var choice string
-	for {
-		fmt.Printf("(a)ll employees/(s)pecific employee: ")
-		
-		_, err := fmt.Scanf("%s", &choice)
-		if err != nil || (choice != "a" && choice != "s"){
-			fmt.Println("INVALID INPUT")
-			continue
-		}
-		break
-	}
-	var dest string
-
-	switch choice {
-	case "a":
-		dest = getAllEndpoint
-	case "s":
-		var field string
-		for {
-			fmt.Printf("(i)d/(n)ame: ")
-			_, err := fmt.Scanf("%s", &field)
-			if err != nil || (field != "i" && field != "n") {
-				fmt.Println("INVALID INPUT")
-				continue
-			}
-			break
-		}
-		var value string
-		if field == "i" {
-			fmt.Printf("ID: ")
-			fmt.Scanf("%s", &value)
-			dest = fmt.Sprintf("%s/%s", idEndpoint, value)
-		} else {
-			fmt.Printf("NAME: ")
-			fmt.Scanf("%s", &value)
-			dest = fmt.Sprintf("%s/%s", nameEndpoint, value)
-		}	
-	}
+	dest := getAllEndpoint
+	
 	message := bytes.NewBufferString(fmt.Sprintf(jsonData, dest, ""))
 	
 	req, err := http.NewRequest(http.MethodGet, endPoint, message)
@@ -330,7 +294,3 @@ func main() {
 	}
 	
 }
-
-// layer1 = display received data / request json				inbound: N/A | outbound: 777
-// layer2 = forming to-be-displayed data / relay request		inbound: 777 | outbound: 888
-// layer3 = parse request / communicate with db				inbound: 888 | outbound: DB(3906)

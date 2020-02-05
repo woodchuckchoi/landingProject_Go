@@ -93,7 +93,7 @@ func ParseBody(raw []byte) []byte {
 
 	err := json.Unmarshal(pre_parse, &body)
 	if err != nil {
-		log.Fatal(err)
+		return []byte("RESPONSE BODY INVALID")
 	}
 	
 	rawResultFormat := `
@@ -101,8 +101,7 @@ func ParseBody(raw []byte) []byte {
 	%s
 	`
 
-	PersonFormat := `
-	Entry %d |   ID %05d   | NAME %20s | SALARY %10d
+	PersonFormat := `Entry %d |   ID %05d   | NAME %20s | SALARY %10d
 	`
 	
 	personSum := ""
@@ -127,20 +126,21 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(raw, &body)
 	if err != nil {
-		log.Fatal(err)
+		w.Write([]byte("RESPONSE NOT VALID"))
+		return
 	}
 
-	fmt.Println("RECEIVED REQUEST FROM ", r.Host, "\n", body)
+	fmt.Println("RECEIVED REQUEST FROM ", r.Host)
 
 	req, err := http.NewRequest(r.Method, body.Message, bytes.NewBuffer(raw))
 	if err != nil {
-		log.Fatal(err)
+		return
 	}
 	
 	resp, err := client.Do(req)
 	if err != nil {
+		w.Write([]byte("APPLICATION SERVER NOT RESPONDING..."))
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("BAD REQUEST!"))
 		return
 	}
 	defer resp.Body.Close()
@@ -157,7 +157,3 @@ func main() {
 	r.HandleFunc("/", Receive)
 	log.Fatal(http.ListenAndServe(myServer, r))
 }
-
-// layer1 = display received data / request json				inbound: N/A | outbound: 777
-// layer2 = forming to-be-displayed data / relay request		inbound: 777 | outbound: 888
-// layer3 = parse request / communicate with db				inbound: 888 | outbound: DB(3906)
