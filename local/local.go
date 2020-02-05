@@ -42,7 +42,7 @@ var (
 
 var (
 	getAllEndpoint string = target + "/employee"
-	newEndpoint    string = target + "/new"
+	newEndpoint    string = getAllEndpoint + "/new"
 	idEndpoint     string = getAllEndpoint + "/id"
 	nameEndpoint   string = getAllEndpoint + "/name"
 )
