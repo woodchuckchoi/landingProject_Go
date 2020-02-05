@@ -246,7 +246,8 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	nRows := 0
 	fmt.Println("oioi")
 	for _, person := range response.Employee {
-		result, err := db.Exec("INSERT INTO hr (id, name, salary) value (?, '?', ?)", person.ID, person.Name, person.Salary)
+		execString := fmt.Sprintf("INSERT INTO hr (id, name, salary) value (%d, '%s', %d)", person.ID, person.Name, person.Salary)
+		result, err := db.Exec(execString)
 		if err != nil {
 			log.Fatal(err)
 		}
