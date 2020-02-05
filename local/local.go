@@ -132,7 +132,7 @@ func ListEmployee() {
 			dest = fmt.Sprintf("%s/%s", idEndpoint, value)
 		} else {
 			fmt.Printf("NAME: ")
-			fmt.Scanf("&s", &value)
+			fmt.Scanf("%s", &value)
 			dest = fmt.Sprintf("%s/%s", nameEndpoint, value)
 		}	
 	}
