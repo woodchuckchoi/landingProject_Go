@@ -258,7 +258,7 @@ func EditEmployee() {
 	
 	message := fmt.Sprintf(jsonData, dest, string(bytesData))
 
-	req, err := http.NewRequest(http.MethodPut, dest, bytes.NewBufferString(message))
+	req, err := http.NewRequest(http.MethodPut, endPoint, bytes.NewBufferString(message))
 	if err != nil {
 		log.Fatal(err)
 	}
