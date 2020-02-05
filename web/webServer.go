@@ -102,7 +102,7 @@ func ParseBody(raw []byte) []byte {
 	`
 
 	PersonFormat := `
-	Entry %d | ID %05d | NAME %30s | SALARY %10d
+	Entry %d |   ID %05d   | NAME %20s | SALARY %10d
 	`
 	
 	personSum := ""

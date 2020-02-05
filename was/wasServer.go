@@ -192,7 +192,14 @@ func GetSpecific(w http.ResponseWriter, r *http.Request) {
 	var result []Person
 	var person Person
 
-	rows, err := db.Query("SELECT id, name, salary FROM hr WHERE ? = ?", field, value)
+	queryString := fmt.Sprintf("SELECT id, name, salary FROM hr WHERE %s = ", field)
+
+	if field == "id" {
+		queryString += fmt.Sprintf("%d", value.(int))
+	} else {
+		queryString += fmt.Sprintf("%s", value.(string))
+	}
+	rows, err := db.Query(queryString)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -285,7 +292,12 @@ func Put(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.Close()
 
-	result, err := db.Exec("UPDATE hr SET id = ?, name = '?', salary = ? where ? = ?", parsedJson.Employee[0].ID, parsedJson.Employee[0].Name, parsedJson.Employee[0].Salary, field, value)
+	if field == "name" {
+		value = "'" + value + "'"
+	}
+	execString := fmt.Sprintf("UPDATE hr SET id = %d, name = '%s', salary = %d where %s = %s", parsedJson.Employee[0].ID, parsedJson.Employee[0].Name, parsedJson.Employee[0].Salary, field, value)
+
+	result, err := db.Exec(execString)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -314,6 +326,10 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	defer db.Close()
+
+	if field == "name" {
+		value = "'" + value + "'"
+	}
 
 	result, err := db.Exec("DELETE FROM hr WHERE ? = ?", field, value)
 	if err != nil {
