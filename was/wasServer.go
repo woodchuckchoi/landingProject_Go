@@ -244,7 +244,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	nRows := 0
-
+	fmt.Println("oioi")
 	for _, person := range response.Employee {
 		result, err := db.Exec("INSERT INTO hr (id, name, salary) value (?, '?', ?)", person.ID, person.Name, person.Salary)
 		if err != nil {
@@ -253,7 +253,7 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		n, err := result.RowsAffected()
 		nRows += int(n)
 	}
-
+	fmt.Println("ioio")
 	w.WriteHeader(http.StatusCreated)
 	insideMessage := fmt.Sprintf("%d ROWS CREATED!", nRows)
 	message := fmt.Sprintf(jsonData, insideMessage, "")
