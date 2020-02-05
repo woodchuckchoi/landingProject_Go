@@ -296,7 +296,7 @@ func DeleteEmployee() {
 
 	message := fmt.Sprintf(jsonData, dest, "")
 
-	req, err := http.NewRequest(http.MethodDelete, dest, bytes.NewBufferString(message))
+	req, err := http.NewRequest(http.MethodDelete, endPoint, bytes.NewBufferString(message))
 	if err != nil {
 		log.Fatal(err)
 	}
