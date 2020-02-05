@@ -37,7 +37,7 @@ var (
 	endPoint 	string 	= "http://" + LoadConf("web")
 	target   	string 	= "http://" + LoadConf("was")
 	client				= &http.Client{}
-	funcList			= []func(){ListEmployee, ListEmployee, CreateEmployee, EditEmployee, DeleteEmployee}
+	funcList			= []func(){ListEmployee, SearchEmployee, CreateEmployee, EditEmployee, DeleteEmployee}
 )
 
 var (
@@ -94,6 +94,57 @@ func CreateQuery() int {
 		break
 	}
 	return num
+}
+
+func SearchEmployee() {
+	ClearScreen()
+	var dest string
+
+	var field string
+	var value string
+	for {
+		fmt.Printf("(i)d/(n)ame: ")
+		if fmt.Scanf("%s", &field); field == "i" || field == "n" {
+			break
+		}
+	}
+
+	var query string
+	switch field {
+	case "i":
+		query = "ID: "
+		dest = idEndpoint
+	case "n":
+		query = "NAME: "
+		dest = nameEndpoint
+	}
+
+	fmt.Printf(query)
+	fmt.Scanf("%s", &value)
+
+	dest += fmt.Sprintf("/%s", value)
+	
+	message := bytes.NewBufferString(fmt.Sprintf(jsonData, dest, ""))
+	
+	req, err := http.NewRequest(http.MethodGet, endPoint, message)
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	
+	bytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	fmt.Println(string(bytes))
+	var next string
+	fmt.Scanf("%s", &next)
 }
 
 func ListEmployee() {
