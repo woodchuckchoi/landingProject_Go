@@ -337,7 +337,7 @@ func main() {
 	HR := r.PathPrefix("/employee").Subrouter()
 
 	HR.HandleFunc("", GetAll).Methods(http.MethodGet)
-	HR.HandleFunc("", NotFound)
+	// HR.HandleFunc("", NotFound)
 
 	HR.HandleFunc("/new", Post).Methods(http.MethodPost)
 	HR.HandleFunc("/new", NotFound)
