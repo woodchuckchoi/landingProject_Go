@@ -314,7 +314,7 @@ func Put(w http.ResponseWriter, r *http.Request) {
 func Delete(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-
+	fmt.Println("DELETE REQUEST RECEIVED!")
 	fields := ParseURL(r.URL.Path)
 
 	field := fields[1]
@@ -330,7 +330,9 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		value = "'" + value + "'"
 	}
 
-	result, err := db.Exec("DELETE FROM hr WHERE ? = ?", field, value)
+	execString:= fmt.Sprintf("DELETE FROM hr WHERE %s = %s", field, value)
+
+	result, err := db.Exec(execString)
 	if err != nil {
 		log.Fatal(err)
 	}
