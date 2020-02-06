@@ -17,6 +17,6 @@ then
 	rm $systemPath
 fi
 
-printf "[Unit]\nDescription=SRE Landing Project Application Daemon Service\nAfter=network.target\n[Service]\nType=Simple\nExecStart=$appPath/$app/$app\nRestart=always" >> $systemPath
-
+printf "[Unit]\nDescription=SRE Landing Project Application Daemon Service\nAfter=network.target\n[Service]\nType=simple\nExecStart=$appPath/$app/$app\nRestart=always" >> $systemPath
+systemctl daemon-reload
 systemctl start landingProject.service
