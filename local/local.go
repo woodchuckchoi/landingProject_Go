@@ -49,10 +49,20 @@ var (
 	nameEndpoint   string = getAllEndpoint + "/name"
 )
 
+func UpperDir(cur string) string {
+	index := 0
+	for i := range cur {
+		if cur[i] == '/' {
+			index = i
+		}
+	}
+	return cur[:index]
+}
+
 func LoadConf(target string) string {
 	_, curDir, _, _ := runtime.Caller(0)
-	curDir = path.Dir(curDir)
-	f, err := os.Open(curDir + "/../conf.json")
+	curDir = UpperDir(path.Dir(curDir))
+	f, err := os.Open(curDir + "/conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}

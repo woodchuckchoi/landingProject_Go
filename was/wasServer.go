@@ -57,7 +57,9 @@ func GetSelfConf(target string) string {
 		}
 	}
 
-	f, err := os.Open("../conf.json")
+	_, curDir, _, _ := runtime.Caller(0)
+	curDir = UpperDir(path.Dir(curDir))
+	f, err := os.Open(curDir + "/conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -73,11 +75,22 @@ func GetSelfConf(target string) string {
 	return fmt.Sprintf("%s:%d", hostString, int(conf["port"][target].(float64)))
 }
 
+func UpperDir(cur string) string {
+	index := 0
+	for i := range cur {
+		if cur[i] == '/' {
+			index = i
+		}
+	}
+	return cur[:index]
+}
+
 func LoadConf(target string) string {
 	fmt.Println("LOADING CONFIGURATION...")
+
 	_, curDir, _, _ := runtime.Caller(0)
-	curDir = path.Dir(curDir)
-	f, err := os.Open(curDir + "/../conf.json")
+	curDir = UpperDir(path.Dir(curDir))
+	f, err := os.Open(curDir + "/conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}
