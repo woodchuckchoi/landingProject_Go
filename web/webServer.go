@@ -9,6 +9,8 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -70,7 +72,9 @@ func GetSelfConf(target string) string {
 
 func LoadConf(target string) string {
 
-	f, err := os.Open("../conf.json")
+	_, curDir, _, _ := runtime.Caller(0)
+	curDir = path.Dir(curDir)
+	f, err := os.Open(curDir + "/../conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -95,7 +99,7 @@ func ParseBody(raw []byte) []byte {
 	if err != nil {
 		return []byte("RESPONSE BODY INVALID")
 	}
-	
+
 	rawResultFormat := `
 	STATUS:%s
 	%s
@@ -103,14 +107,14 @@ func ParseBody(raw []byte) []byte {
 
 	PersonFormat := `Entry %d |   ID %05d   | NAME %20s | SALARY %10d
 	`
-	
+
 	personSum := ""
 	for index, person := range body.Employee {
 		personSum += fmt.Sprintf(PersonFormat, index, person.ID, person.Name, person.Salary)
 	}
-	
+
 	rawResult := fmt.Sprintf(rawResultFormat, body.Message, personSum)
-	
+
 	return []byte(rawResult)
 }
 
@@ -136,7 +140,7 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
-	
+
 	resp, err := client.Do(req)
 	if err != nil {
 		w.Write([]byte("APPLICATION SERVER NOT RESPONDING..."))
@@ -144,10 +148,10 @@ func Receive(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer resp.Body.Close()
-	
+
 	w.WriteHeader(http.StatusOK)
 	bytes, err := ioutil.ReadAll(resp.Body)
-	
+
 	w.Write(ParseBody(bytes))
 }
 

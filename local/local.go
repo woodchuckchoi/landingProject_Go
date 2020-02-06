@@ -11,6 +11,8 @@ import (
 	"os/exec"
 	"strconv"
 	"time"
+	"runtime"
+	"path"
 )
 
 type Body struct {
@@ -48,7 +50,9 @@ var (
 )
 
 func LoadConf(target string) string {
-	f, err := os.Open("../conf.json")
+	_, curDir, _, _ := runtime.Caller(0)
+	curDir = path.Dir(curDir)
+	f, err := os.Open(curDir + "/../conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}

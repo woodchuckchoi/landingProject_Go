@@ -9,6 +9,8 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path"
+	"runtime"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -73,7 +75,9 @@ func GetSelfConf(target string) string {
 
 func LoadConf(target string) string {
 	fmt.Println("LOADING CONFIGURATION...")
-	f, err := os.Open("../conf.json")
+	_, curDir, _, _ := runtime.Caller(0)
+	curDir = path.Dir(curDir)
+	f, err := os.Open(curDir + "/../conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -91,9 +95,9 @@ func LoadConf(target string) string {
 
 func GetDbEndpoint() string {
 	fmt.Println("LOADING DB CONFIGURATION...")
-	userName := os.Getenv("DBUSERNAME") 
-	userPass := os.Getenv("DBPASSWORD") 
-	dbName := os.Getenv("DBNAME")       
+	userName := os.Getenv("DBUSERNAME")
+	userPass := os.Getenv("DBPASSWORD")
+	dbName := os.Getenv("DBNAME")
 
 	dbEndpoint := fmt.Sprintf("%s:%s@tcp(%s)/%s", userName, userPass, endPoint, dbName)
 
@@ -161,7 +165,7 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var stringJsonify string
-	
+
 	if len(result) != 0 {
 		byteJsonify, err := json.Marshal(result)
 		if err != nil {
@@ -201,7 +205,7 @@ func GetSpecific(w http.ResponseWriter, r *http.Request) {
 	}
 
 	queryString := fmt.Sprintf("SELECT id, name, salary FROM hr WHERE %s = %s", field, value)
-	
+
 	rows, err := db.Query(queryString)
 	if err != nil {
 		log.Fatal(err)
@@ -334,7 +338,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		value = "'" + value + "'"
 	}
 
-	execString:= fmt.Sprintf("DELETE FROM hr WHERE %s = %s", field, value)
+	execString := fmt.Sprintf("DELETE FROM hr WHERE %s = %s", field, value)
 
 	result, err := db.Exec(execString)
 	if err != nil {
