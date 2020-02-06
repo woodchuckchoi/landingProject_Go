@@ -48,7 +48,7 @@ var (
 )
 
 func LoadConf(target string) string {
-	f, err := os.Open("home/ubuntu/landingProject_Go/conf.json")
+	f, err := os.Open("/home/ubuntu/landingProject_Go/conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}
