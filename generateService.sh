@@ -14,4 +14,4 @@ sudo echo "Type=Simple" >> $systemPath
 sudo echo "ExecStart=sudo $appPath/$app/$app" >> $systemPath
 sudo echo "Restart=always" >> $systemPath
 
-#sudo systemctl start landingProject.service
+sudo systemctl start landingProject.service
