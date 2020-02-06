@@ -19,4 +19,4 @@ fi
 
 printf "[Unit]\nDescription=SRE Landing Project Application Daemon Service\nAfter=network.target\n[Service]\nType=Simple\nExecStart=$appPath/$app/$app\nRestart=always" >> $systemPath
 
-sudo systemctl start landingProject.service
+systemctl start landingProject.service
