@@ -9,8 +9,6 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"path"
-	"runtime"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -57,9 +55,7 @@ func GetSelfConf(target string) string {
 		}
 	}
 
-	_, curDir, _, _ := runtime.Caller(0)
-	curDir = UpperDir(path.Dir(curDir))
-	f, err := os.Open(curDir + "/conf.json")
+	f, err := os.Open("home/ubuntu/landingProject_Go/conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -75,22 +71,10 @@ func GetSelfConf(target string) string {
 	return fmt.Sprintf("%s:%d", hostString, int(conf["port"][target].(float64)))
 }
 
-func UpperDir(cur string) string {
-	index := 0
-	for i := range cur {
-		if cur[i] == '/' {
-			index = i
-		}
-	}
-	return cur[:index]
-}
-
 func LoadConf(target string) string {
 	fmt.Println("LOADING CONFIGURATION...")
 
-	_, curDir, _, _ := runtime.Caller(0)
-	curDir = UpperDir(path.Dir(curDir))
-	f, err := os.Open(curDir + "/conf.json")
+	f, err := os.Open("home/ubuntu/landingProject_Go/conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}
