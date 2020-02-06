@@ -51,7 +51,7 @@ func GetSelfConf(target string) string {
 			break
 		}
 	}
-	f, err := os.Open("home/ubuntu/landingProject_Go/conf.json")
+	f, err := os.Open("/home/ubuntu/landingProject_Go/conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -69,7 +69,7 @@ func GetSelfConf(target string) string {
 
 func LoadConf(target string) string {
 
-	f, err := os.Open("home/ubuntu/landingProject_Go/conf.json")
+	f, err := os.Open("/home/ubuntu/landingProject_Go/conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}
