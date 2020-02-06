@@ -95,9 +95,10 @@ func LoadConf(target string) string {
 
 func GetDbEndpoint() string {
 	fmt.Println("LOADING DB CONFIGURATION...")
-	userName := os.Getenv("DBUSERNAME")
-	userPass := os.Getenv("DBPASSWORD")
-	dbName := os.Getenv("DBNAME")
+	
+	userName := os.Args[len(os.Args)-2]
+	userPass := os.Args[len(os.Args)-1]
+	dbName := os.Args[len(os.Args)-3]
 
 	dbEndpoint := fmt.Sprintf("%s:%s@tcp(%s)/%s", userName, userPass, endPoint, dbName)
 
