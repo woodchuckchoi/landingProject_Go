@@ -14,7 +14,7 @@ systemPath=/etc/systemd/system/landingProject.service
 
 if [ -f $systemPath ] 
 then
-	rm $file
+	rm $systemPath
 fi
 
 printf "[Unit]\nDescription=SRE Landing Project Application Daemon Service\nAfter=network.target\n[Service]\nType=Simple\nExecStart=$appPath/$app/$app\nRestart=always" >> $systemPath
