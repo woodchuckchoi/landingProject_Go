@@ -15,4 +15,4 @@ Restart=always
 
 sudo echo $service >> /etc/systemd/system/landingProject.service
 
-# sudo systemctl start landingProject.service
+sudo systemctl start landingProject.service
