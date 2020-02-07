@@ -1,6 +1,6 @@
 {
     "host": {
-        "local" : "10.10.11.33",
+        "local" : "10.10.11.121",
         "web"   : "SRE-external-1516178641.ap-northeast-2.elb.amazonaws.com",
         "was"   : "internal-SRE-internal-1549280411.ap-northeast-2.elb.amazonaws.com",
         "db"    : "terraform-20200205083926191600000001.c7iudllookzy.ap-northeast-2.rds.amazonaws.com"
