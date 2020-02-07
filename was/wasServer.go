@@ -9,6 +9,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path"
 	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -55,7 +56,10 @@ func GetSelfConf(target string) string {
 		}
 	}
 
-	f, err := os.Open("/home/ubuntu/landingProject_Go/conf.json")
+	curFile, _ := os.Executable()
+	curDir := path.Dir(curFile)
+
+	f, err := os.Open(UpperDir(curDir) + "/conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -71,14 +75,26 @@ func GetSelfConf(target string) string {
 	return fmt.Sprintf("%s:%d", hostString, int(conf["port"][target].(float64)))
 }
 
+func UpperDir(original string) string {
+	lastSlash := 0
+	for i, val := range original {
+		if val == '/' {
+			lastSlash = i
+		}
+	}
+	return original[:lastSlash]
+}
+
 func LoadConf(target string) string {
 	fmt.Println("LOADING CONFIGURATION...")
 
-	f, err := os.Open("/home/ubuntu/landingProject_Go/conf.json")
+	curFile, _ := os.Executable()
+	curDir := path.Dir(curFile)
+
+	f, err := os.Open(UpperDir(curDir) + "/conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer f.Close()
 
 	raw, err := ioutil.ReadAll(f)
 	if err != nil {
@@ -92,7 +108,7 @@ func LoadConf(target string) string {
 
 func GetDbEndpoint() string {
 	fmt.Println("LOADING DB CONFIGURATION...")
-	
+
 	userName := os.Args[len(os.Args)-2]
 	userPass := os.Args[len(os.Args)-1]
 	dbName := os.Args[len(os.Args)-3]

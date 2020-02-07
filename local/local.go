@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"strconv"
 	"time"
+	"path"
 )
 
 type Body struct {
@@ -47,8 +48,21 @@ var (
 	nameEndpoint   string = getAllEndpoint + "/name"
 )
 
+func UpperDir(original string) string {
+	lastSlash := 0
+	for i, val := range original {
+		if val == '/' {
+			lastSlash = i
+		}
+	}
+	return original[:lastSlash]
+}
+
 func LoadConf(target string) string {
-	f, err := os.Open("/home/ubuntu/landingProject_Go/conf.json")
+	curFile, _ := os.Executable()
+	curDir := path.Dir(curFile)
+	
+	f, err := os.Open(UpperDir(curDir) + "/conf.json")
 	if err != nil {
 		log.Fatal(err)
 	}
